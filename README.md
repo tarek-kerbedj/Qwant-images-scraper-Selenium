@@ -5,5 +5,13 @@ this script will help automate the image collection process  using Selenium
 ```
 pip install selenium
 ```
+- Install requests
+```
+pip install requests
+```
+- Install Beautifulsoup
+```
+pip install bs4
+```
 - Mozilla firefox browser https://www.mozilla.org/en-US/firefox/new/
 - download geckodriver https://github.com/mozilla/geckodriver/releases
