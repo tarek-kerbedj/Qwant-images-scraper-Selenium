@@ -8,12 +8,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 query= input('choose something to look up ...\n').split()
-folder_name = input('choose a file name for your dataset')
+folder_name = input('choose a file name for your dataset \n')
 if not os.path.isdir(folder_name):
     os.makedirs(folder_name)
 
 def download_image(url, folder_name, num):
-	'''Takes in the image url , the output foldername and an int that we will use to name our files'''
+
+	
     # write image to file
     reponse = requests.get(url)
     if reponse.status_code==200:
