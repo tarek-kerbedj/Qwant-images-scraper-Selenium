@@ -1,5 +1,5 @@
 # image_dataset_collector
-this script will help automate the image collection process (from the web) using Selenium
+this script will help automate the image collection process  using Selenium
 ## requirments
 - Install Selenium  
 ```
