@@ -5,7 +5,7 @@ this script will help automate the image collection process  using Selenium
 ```
 pip install selenium
 ```
-- Install requests
+- Install urllib3
 ```
 pip install requests
 ```
