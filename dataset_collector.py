@@ -1,19 +1,14 @@
 # TODO: choice between URL or keywords
 import bs4
 from selenium import webdriver
-import urllib3
 from urllib3 import PoolManager
-import logging
 import warnings
-import os
 from os import makedirs
 from os.path import isdir,join
 from random import random
 from time import sleep,perf_counter
 from concurrent.futures import ThreadPoolExecutor
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 query = input('choose something to look up ...\n').split()
 https = PoolManager()
