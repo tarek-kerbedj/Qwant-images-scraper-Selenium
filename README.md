@@ -7,7 +7,7 @@ pip install selenium
 ```
 - Install urllib3
 ```
-pip install requests
+pip install urllib3
 ```
 - Install Beautifulsoup
 ```
