@@ -12,7 +12,7 @@ from selenium.webdriver.common.by import By
 
 query = input('choose something to look up ...\n').split()
 https = PoolManager()
-
+gen=(i for i in range(150))
 folder_name = input('choose a folder name for your dataset \n')
 if not isdir(folder_name):
 	#if the folder doesnt exist , create one
@@ -22,7 +22,7 @@ def download_image(url):
 	# first we start by sending a an HTTP request to make sure all is good
 	response = https.request('GET', url) 
 	if response.status == 200:
-		with open(join(folder_name, str(random())+".jpg"), 'wb') as file:
+		with open(join(folder_name, str(next(gen))+".jpg"), 'wb') as file:
 			file.write(response.data)
 			
 	else:
