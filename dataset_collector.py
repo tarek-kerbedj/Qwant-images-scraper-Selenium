@@ -1,32 +1,47 @@
-# TODO: choice between URL or keywords
 import bs4
 from selenium import webdriver
 from urllib3 import PoolManager
 import warnings
 from os import makedirs
 from os.path import isdir,join
-from random import random
-from time import sleep,perf_counter
+from time import perf_counter
 from concurrent.futures import ThreadPoolExecutor
 from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.service import Service
+import urllib.request
+https = PoolManager()
+def connect(host='http://qwant.com'):
+	'''checks for internet connectivity and availability of the website'''
+	try:
+		urllib.request.urlopen(host) 
+		print('Connection succesful to Qwant.com ...')
+		return True
+	except:
+		raise Exception("Unable to connect to Qwant.com , please make sure you're connected\
+		or that Qwant.com isn't down")
+connect()
 
 query = input('choose something to look up ...\n').split()
-https = PoolManager()
-gen=(i for i in range(150))
+if query==[]:
+	raise ValueError('Empty string passed as query')
+
+
 folder_name = input('choose a folder name for your dataset \n')
-if not isdir(folder_name):
+
+if folder_name=='':
+	raise ValueError('Empty string passed as folder name')
+elif not isdir(folder_name):
 	#if the folder doesnt exist , create one
 	makedirs(folder_name)
 
 def download_image(url):
 	# first we start by sending a an HTTP request to make sure all is good
-	response = https.request('GET', url) 
+	response = https.request('GET', url[0]) 
 	if response.status == 200:
-		with open(join(folder_name, str(next(gen))+".jpg"), 'wb') as file:
+		with open(join(folder_name, str(url[1])+".jpg"), 'wb') as file:
 			file.write(response.data)
 			
 	else:
-		sleep(0.5)
 		warnings.warn("Warning , couldn't download this image , moving on the the next one ...")
 
 
@@ -38,42 +53,31 @@ def create_query(keywords):
 	qwant_url='https://www.qwant.com/?l=en&q='
 	query = '+'.join(keywords)
 	search_URL=''.join([qwant_url,query,'+-gif&t=images'])
-	
-	
-	
 	return search_URL
 
+s = Service('geckodriver.exe') # you can change your driver path accordingly
+driver = webdriver.Firefox(service=s)
+
 search_URL = create_query(query)
-#you can change your driver path accordingly
-driver_path = 'geckodriver.exe'
-fireFoxOptions = webdriver.FirefoxOptions()
-fireFoxOptions.headless=True
-#fireFoxOptions.set_headless()
-driver = webdriver.Firefox(executable_path=driver_path,options=fireFoxOptions)
+driver.get(search_URL) # look up the query
 
-try:
-	driver.get(search_URL)
-except:
-	print("try another query")
-
-page_html = driver.page_source
+page_html = driver.page_source # get the page source code
 
 pageSoup = bs4.BeautifulSoup(page_html, 'html.parser')
-# find the image containers to loop through them
 
-containers = pageSoup.findAll('a', {'class':"Images-module__ImagesGridItem___1W4Bs"} )
+containers = pageSoup.findAll('a', {'class':"Images-module__ImagesGridItem___1W4Bs"} ) # find the image containers to loop through them
+
+# i stored a list of tuples that consist of an image URL and a corresponding index which i'll use to name the images	
+imageURL = [(driver.find_element(by=By.CSS_SELECTOR,\
+	value=f'a.Images-module__ImagesGridItem___1W4Bs:nth-child({i}) > div:nth-child(1) > img:nth-child(1)').get_attribute('src'),i)\
+	 for i in range(1,len(containers))]
+
+if len(imageURL)==0:
+	raise Exception("Couldn't find any images , try another query")
 	
-previews = [driver.find_element_by_css_selector(f'a.Images-module__ImagesGridItem___1W4Bs:nth-child({i}) > div:nth-child(1) > img:nth-child(1)') for i in range(1,len(containers))]
-
-
-imageURL = [element.get_attribute('src') for element in previews]
-
-assert len(imageURL) != 0 ,"There are no  URLS to download"
-
-t1=perf_counter()
 # multithreading highly improves the performance
+t1=perf_counter()
 with ThreadPoolExecutor() as executor:
 	executor.map(download_image,imageURL)
 t2=perf_counter()
-
 print(f'it took {t2-t1} seconds to download {len(imageURL)} images')
