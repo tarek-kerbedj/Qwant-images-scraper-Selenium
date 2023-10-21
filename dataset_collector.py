@@ -5,12 +5,17 @@ from urllib3 import PoolManager
 import warnings
 from os import makedirs
 import argparse
+import urllib.request
 from os.path import isdir,join
 from time import perf_counter
 from concurrent.futures import ThreadPoolExecutor
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.service import Service
-import urllib.request
+from selenium.webdriver.firefox.options import Options
+options = Options()
+options.headless = True
+
+
 https = PoolManager()
 # attempt to make a connection 
 connect()
@@ -39,22 +44,16 @@ try:
 except:
 	raise Exception('Error, couldnt load the geckodriver , please check the path')
 try:
-
-	driver = webdriver.Firefox(service=s)
+	driver = webdriver.Firefox(service=Service('geckodriver.exe'), options=options)
+	#driver = webdriver.Firefox(service=s)
 except:
 	raise Exception('Error initializing the webdriver')
+
 search_URL = create_query(query)
 driver.get(search_URL) # look up the query
 
-page_html = driver.page_source # get the page source code
 
-pageSoup = bs4.BeautifulSoup(page_html, 'html.parser')
-
-containers = pageSoup.findAll('a', {'class':"Images-module__ImagesGridItem___1W4Bs"} ) # find the image containers to loop through them
-
-# i stored a list of tuples that consist of an image URL and a corresponding index which i'll use to name the images	
-
-imageURLS=[driver.find_element(by=By.CSS_SELECTOR,value=f'a._1W4Bs:nth-child({i}) > div:nth-child(1) > img:nth-child(1)').get_attribute('src') for i in range(1,25)]
+imageURLS=[driver.find_element(by=By.CSS_SELECTOR,value=f'a._1W4Bs:nth-child({i}) > div:nth-child(1) > img:nth-child(1)').get_attribute('src') for i in range(1,51)]
 
 if len(imageURLS)==0:
 	raise Exception("Couldn't find any images , try another query")
@@ -76,3 +75,4 @@ with ThreadPoolExecutor() as executor:
 
 t2=perf_counter()
 print(f'it took {t2-t1} seconds to download {len(imageURLS)} images')
+driver.quit()
