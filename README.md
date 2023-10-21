@@ -16,9 +16,9 @@ pip install bs4
 - Mozilla firefox browser https://www.mozilla.org/en-US/firefox/new/
 - download geckodriver https://github.com/mozilla/geckodriver/releases
 ## How to use the script 
-1) run python dataset_collector.py through your commandline
-2) type down your query 
-3) type down the folder name to store your results 
+- run ```python dataset_collector.py "query" folder_name```
+where query represents the search keyword and the folder_name represents the name of the local folder where your images would be saved
 
 
-PS: because the default mode that's used in the code is headless , the browser will only appear in task manager and won't open up , this is in order to save up on some ressources and make the process a bit faster
+
+PS: because the default mode that's used in the code is headless, the browser will only appear in the task manager and won't open up, this is in order to save up on some resources and make the process a bit faster
