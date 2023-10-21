@@ -1,18 +1,11 @@
 # image_dataset_collector
 this script will help automate the image collection process from Qwant images  using Selenium
 ## requirments
-- Install Selenium  
+- Install the requirements
 ```
-pip install selenium
+pip -r install requirements.txt
 ```
-- Install urllib3
-```
-pip install urllib3
-```
-- Install Beautifulsoup
-```
-pip install bs4
-```
+
 - Mozilla firefox browser https://www.mozilla.org/en-US/firefox/new/
 - download geckodriver https://github.com/mozilla/geckodriver/releases
 ## How to use the script 
