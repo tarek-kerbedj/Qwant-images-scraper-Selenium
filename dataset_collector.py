@@ -14,8 +14,6 @@ from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.firefox.options import Options
 options = Options()
 options.headless = True
-
-
 https = PoolManager()
 # attempt to make a connection 
 connect()
